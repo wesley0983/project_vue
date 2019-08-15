@@ -38,54 +38,34 @@
                 columns: [
                     {
                         title: '#',
-                        key: 'item'
+                        key: 'id'
                     },
                     {
-                        title: '員工姓名',
+                        title: '會員姓名',
                         key: 'name'
                     },
                     {
-                        title: '員工編號',
-                        key: 'number'
+                        title: '會員帳號',
+                        key: 'account'
                     },
                     {
-                        title: '權限',
-                        key: 'access'
+                        title: '會員密碼',
+                        key: 'password'
                     },
                     {
-                        title: '部門',
-                        key: 'department'
+                        title: '信箱',
+                        key: 'email'
                     },
                     {
-                        title: '職級',
-                        key: 'rank'
+                        title: '電話',
+                        key: 'phone'
+                    },
+                    {
+                        title: '狀態',
+                        key: 'status'
                     }
                 ],
                 employees: [
-                    {
-                        item: '1',
-                        name: 'Mark',
-                        number: 'Otto',
-                        access: '@mdo',
-                        department: '',
-                        rank: ''
-                    },
-                    {
-                        item: '2',
-                        name: 'Mark',
-                        number: 'Otto',
-                        access: '@mdo',
-                        department: '',
-                        rank: ''
-                    },
-                    {
-                        item: '3',
-                        name: 'Mark',
-                        number: 'Otto',
-                        access: '@mdo',
-                        department: '',
-                        rank: ''
-                    }
                 ],
                 departments: [
                     {
@@ -116,9 +96,27 @@
             }
         },
         created () {
-            this.$emit('getPageTitle', '')
+            this.$emit('getPageTitle', '');
+            // this.loadData()
         },
         computed: {
+            loadData(){
+                // fetch("/Api/users/list", {
+                //     method: "GET",
+                //     body: {
+                //         page: '1',
+                //         size: '10',
+                //         name: '',
+                //         account: ''
+                //     },
+                //     //headers: { "content-type": "application/json" } //{"Content-Type": "application/x-www-form-urlencoded"}
+                // }).then(response => {
+                //     console.log(response)
+                //     // if(response.status === 200){
+                //     //     this.$router.push('./users')
+                //     // }
+                // })
+            },
             currentDepartment () {
                 let departmentName = ''
                 if (this.searchModel.departmentId > 0) {

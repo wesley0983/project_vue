@@ -1,49 +1,103 @@
 <template>
-    <div class="loginPage">
-        <Card>
-            <div class="loginTitle my-4">
-                <Avatar icon="ios-person" size="large"/>
+    <div class="login">
+        <h2>Login</h2>
+        <div>
+            <div>{{msg}}</div>
+            <div class="loginPage">
+                <Card>
+                    <div class="loginTitle">
+                        <Avatar icon="ios-person" size="large" />
+                    </div>
+                    <div class="loginBody">
+                        <Row>
+                            <Input
+                                    class="mb-3"
+                                    v-model="username"
+                                    prefix="md-person"
+                                    placeholder="Account"
+                                    style="width: auto"
+                            />
+                            <Input
+                                    class="mb-3"
+                                    v-model="password"
+                                    prefix="md-lock"
+                                    placeholder="Account"
+                                    style="width: auto"
+                            />
+                            <Input
+                                    class="mb-3"
+                                    v-model="imageCode"
+                                    prefix="md-lock"
+                                    placeholder="Enter imageCode"
+                                    style="width: auto"
+                            />
+                            <img src="/api/Api/code/image" />
+                        </Row>
+                        <!-- <Row>
+                          <Checkbox v-model="check">Remember me</Checkbox>
+                        </Row> -->
+                    </div>
+                    <div class="loginFooter">
+                        <Button @click="login" type="primary">Login</Button>
+                    </div>
+                </Card>
             </div>
-            <div class="loginBody my-4">
-                <Row>
-                    <Input class="mb-3" prefix="md-person" size="large" v-model="account" clearable placeholder="Account"/>
-                    <Input class="mb-3" prefix="md-lock" size="large" v-model="password" clearable placeholder="Password"/>
-                </Row>
-                <Row>
-                    <Checkbox class="my-3" v-model="check">Remember me</Checkbox>
-                </Row>
-
-            </div>
-            <div class="loginFooter my-5">
-                <Button type="primary" @click="login">Login</Button>
-            </div>
-        </Card>
+        </div>
     </div>
-
 </template>
+
 <script>
     export default {
-        data () {
+        data() {
             return {
-                check: false,
-                account: '',
-                password: ''
-            }
+                username: "",
+                password: "",
+                imageCode: "",
+                msg: ""
+            };
         },
         methods: {
-            login () {
-                this.Logan.login(this.account, this.password).then(response => {
-                    if(response.status === 201){
+            login() {
+                this.Logan.login(this.username,this.password,this.imageCode).then(response => {
+                    window.console.log(response)
+                    if (response.status === 201) {
                         this.$router.push('./users')
-                    }else{
+                    } else {
                         alert(response.message)
                     }
-                })
-            }
-        }
-    }
-</script>
+                });
 
+                /**  舊版登入 **/
+                // fetch("/api/Api/nrsc/signIn", {
+                //     method: "POST",
+                //     body: JSON.stringify({
+                //         username: this.username,
+                //         password: this.password,
+                //         imageCode: this.imageCode
+                //     }),
+                //     headers: { "content-type": "application/json" } //{"Content-Type": "application/x-www-form-urlencoded"}
+                // }).then(response => {
+                //     console.log(response)
+                //     if(response.status === 200){
+                //         this.$router.push('./users')
+                //     }
+                // })
+            }
+        },
+        mounted() {
+            // fetch("/api/Api/testPost",{
+            //     method:"POST"
+            // }).then(response => {
+            //     console.log(response);
+            //     return response.json()
+            //     // return response.json();
+            // }).then(data => {
+            //     console.log(data)
+            //     this.msg = data;
+            // })
+        }
+    };
+</script>
 <style scoped>
     .loginPage {
         width: 300px;
@@ -52,12 +106,10 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
-
     .ivu-card {
         height: 400px;
         text-align: center;
     }
-
     .loginTitle {
         margin-bottom: 20px;
     }
