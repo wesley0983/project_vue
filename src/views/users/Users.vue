@@ -23,9 +23,10 @@
                     <BreadcrumbItem v-if="searchModel.departmentId>0">{{currentDepartment}}</BreadcrumbItem>
                 </Breadcrumb>
             </row>
-            <Table :columns="columns" :data="employees" class="mx-3"></Table>
+            <Table :columns="userList" :data="users" class="mx-3"></Table>
             <row type="flex" justify="center"  class="mt-4">
-                <Page :total="100"/>
+<!--                <Page :total="100"/>-->
+                <Page :total="page.total" show-total show-sizer @on-change="changePage" @on-page-size-change="changeSize"></Page>
             </row>
         </content>
     </div>
@@ -35,7 +36,7 @@
     export default {
         data () {
             return {
-                columns: [
+                userList: [
                     {
                         title: '#',
                         key: 'id'
@@ -65,7 +66,7 @@
                         key: 'status'
                     }
                 ],
-                employees: [],
+                users: [],
                 departments: [
                     {
                         value: 1,
@@ -88,6 +89,11 @@
                         label: '部門5'
                     }
                 ],
+                page: {
+                    total:0,
+                    number: 0,
+                    size: 10,
+                },
                 searchModel: {
                     keyword: '',
                     departmentId: 0
@@ -147,17 +153,30 @@
                 fetch('/api/Api/users/list', {
                     method: 'POST',
                     body: JSON.stringify({
-                        page: '1',
-                        size: '10'
+                        page: this.page,
+                        size: this.size,
+                        number: this.page.number
                     }),
                     headers: {'content-type': 'application/json'} //{"Content-Type": "application/x-www-form-urlencoded"}
                 }).then(response => {
                     return response.json()
                 }).then(data => {
-                    this.employees = data.content;
+                    this.page.total = data.totalElements;
+                    this.page.number = data.pageable.pageNumber;
+                    this.users = data.content;
+                    this.size = data.size;
                 })
+
             },
             search(){
+                this.loadData()
+            },
+            changePage (page) {
+                this.page.number = page - 1
+                this.loadData()
+            },
+            changeSize (pageSize) {
+                this.page.size = pageSize
                 this.loadData()
             }
         }
