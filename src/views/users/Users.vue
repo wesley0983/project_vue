@@ -14,7 +14,7 @@
                     </Input>
                 </Col>
                 <Col>
-                    <Button type="primary">查詢</Button>
+                    <Button type="primary" @click="search">查詢</Button>
                 </Col>
             </row>
             <row type="flex" justify="start" class="mx-3 my-4">
@@ -65,8 +65,7 @@
                         key: 'status'
                     }
                 ],
-                employees: [
-                ],
+                employees: [],
                 departments: [
                     {
                         value: 1,
@@ -97,32 +96,69 @@
         },
         created () {
             this.$emit('getPageTitle', '');
-            // this.loadData()
+            this.loadData();
         },
         computed: {
-            loadData(){
-                // fetch("/Api/users/list", {
-                //     method: "GET",
-                //     body: {
-                //         page: '1',
-                //         size: '10',
-                //         name: '',
-                //         account: ''
-                //     },
-                //     //headers: { "content-type": "application/json" } //{"Content-Type": "application/x-www-form-urlencoded"}
-                // }).then(response => {
-                //     console.log(response)
-                //     // if(response.status === 200){
-                //     //     this.$router.push('./users')
-                //     // }
-                // })
-            },
             currentDepartment () {
                 let departmentName = ''
                 if (this.searchModel.departmentId > 0) {
                     departmentName = this.departments.find(x => x.value === this.searchModel.departmentId).label
                 }
                 return departmentName
+            }
+        },
+        methods:{
+            loadData(){
+                // fetch("/api/Api/testPost",{
+                //     method: "POST",
+                //     body: JSON.stringify({
+                //         username: '123',
+                //         password: '456'
+                //     }),
+                //     headers: {'content-type': 'application/json'}
+                // }).then(response => {
+                //     return response
+                // }).then(data => {
+                //     console.log(data)
+                // });
+                /** */
+                // fetch("/api/Api/testPost?username=22&password=33",{
+                //     method: "GET",
+                //     headers: {'content-type': 'application/x-www-form-urlencoded'}
+                // }).then(response => {
+                //     return response
+                // }).then(data => {
+                //     console.log(data)
+                // })
+                /** */
+                // fetch("/api/Api/testPost",{
+                //     method: "GET",
+                //     params:JSON.stringify({
+                //            username: '123',
+                //            password: '456'
+                //        }),
+                //     headers: {'content-type': 'application/x-www-form-urlencoded'}
+                // }).then(response => {
+                //     return response
+                // }).then(data => {
+                //     console.log(data)
+                // })
+                /** */
+                fetch('/api/Api/users/list', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        page: '1',
+                        size: '10'
+                    }),
+                    headers: {'content-type': 'application/json'} //{"Content-Type": "application/x-www-form-urlencoded"}
+                }).then(response => {
+                    return response.json()
+                }).then(data => {
+                    this.employees = data.content;
+                })
+            },
+            search(){
+                this.loadData()
             }
         }
     }
