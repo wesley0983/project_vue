@@ -153,6 +153,7 @@
                 fetch('/api/Api/users/list', {
                     method: 'POST',
                     body: JSON.stringify({
+                        name: this.searchModel.keyword,
                         page: this.page,
                         size: this.size,
                         number: this.page.number
@@ -169,6 +170,7 @@
 
             },
             search(){
+                console.log(this.searchModel.keyword)
                 this.loadData()
             },
             changePage (page) {
