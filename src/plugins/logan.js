@@ -1,6 +1,22 @@
 export default class Logan {
 
-    constructor() {
+    constructor(router) {
+        // this.router = router
+        // router.beforeEach((to, from, next) => {
+        //     this.getUserInfo(false).then(response => {
+        //         if (response.data.userInfo) {
+        //             if (response.data.userInfo.expired) {
+        //                 to.name === 'login' ? next() : next({ path: '/' })
+        //             }else{
+        //                 to.name === 'login' ? next({ path: '/users' }) : next()
+        //             }
+        //         } else if (to.name === 'login') {
+        //             next()
+        //         } else {
+        //             next({ path: '/' })
+        //         }
+        //     })
+        // })
     }
 
     login (username, password,imageCode) {
@@ -33,12 +49,12 @@ export default class Logan {
     }
 
     logout () {
-        fetch('/logout', {
+        return fetch('/logout', {
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             method: 'get',
             mode: 'same-origin'
-        })
+        }).then(response => response.json())
     }
 }

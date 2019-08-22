@@ -1,15 +1,25 @@
 <template>
     <div>
         <content>
+            <row type="flex" justify="start" class="mx-3 my-4">
+                <Input v-model="searchModel.keyword">
+                    <Icon type="ios-search" slot="prefix"/>
+                </Input>
+            </row>
+            <Button type="primary" @click="search">查詢</Button>
             <row type="flex" justify="end">
                 <Button type="primary" @click="show('managerAdd')">新增</Button>
             </row>
             <Table border :columns="columns" :data="managers" :style="{margin:'20px'}">
                 <template slot-scope="{ row, index }" slot="action">
-                    <Button type="primary" size="small" style="margin-right: 5px" @click="show('managerEdit')">修改</Button>
+                    <Button type="primary" size="small" style="margin-right: 5px" @click="show('managerEdit', row)">修改
+                    </Button>
                     <Button type="error" size="small" @click="remove()">刪除</Button>
                 </template>
             </Table>
+            <row type="flex" justify="center"  class="mt-4">
+                <Page :total="page.total" show-total show-sizer @on-change="changePage" @on-page-size-change="changeSize"></Page>
+            </row>
         </content>
         <manager-edit ref="modalManagerEdit"></manager-edit>
     </div>
@@ -19,16 +29,16 @@
     import ManagerEdit from './model/ManagerEdit.vue'
 
     export default {
-        name:'newManager',
-        components:{
+        name: 'newManager',
+        components: {
             'manager-edit': ManagerEdit
         },
-        data () {
+        data() {
             return {
                 columns: [
                     {
                         title: '#',
-                        key:'id',
+                        key: 'id',
                         align: 'center'
                     },
                     {
@@ -42,8 +52,13 @@
                         align: 'center'
                     },
                     {
-                        title: '密碼',
-                        key: 'password',
+                        title: '創建時間',
+                        key: 'createTime',
+                        align: 'center'
+                    },
+                    {
+                        title: '更新時間',
+                        key: 'updateTime',
                         align: 'center'
                     },
                     {
@@ -52,42 +67,59 @@
                         align: 'center'
                     }
                 ],
-                managers: [
-                    {
-                        id:'1',
-                        name: 'Mark',
-                        account: '@mdo',
-                        password: 'sss'
-                    },
-                    {
-                        id:'2',
-                        name: 'Jacob',
-                        account: '@fat',
-                        password: 'sss'
-                    },
-                    {
-                        id:'3',
-                        name: 'Larry',
-                        account: '@twitter',
-                        password: 'sss'
-                    },
-                ]
+                managers: [],
+                page: {
+                    total:0,
+                    number: 0,
+                    size: 10,
+                },
+                searchModel: {
+                    keyword: '',
+                },
+                page: {
+                    total:0,
+                    number: 0,
+                    size: 10,
+                },
             }
         },
-        created(){
-            this.$emit('getPageTitle','')
+        created() {
+            this.$emit('getPageTitle', '');
+            this.loadData();
         },
         methods: {
-            show (btn) {
+            loadData() {
+                fetch('/api/Api/manager/list', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: this.searchModel.keyword,
+                        size: this.size,
+                        number: this.page.number
+                    }),
+                    headers: {'content-type': 'application/json'} //{"Content-Type": "application/x-www-form-urlencoded"}
+                }).then(response => {
+                    return response.json()
+                }).then(data => {
+                    this.page.total = data.totalElements;
+                    this.page.number = data.pageable.pageNumber;
+                    this.managers = data.content;
+                    this.size = data.size;
+                })
+            },
+            search(){
+                console.log(this.searchModel.keyword)
+                this.loadData()
+            },
+            show(btn,row) {
                 switch (btn) {
                     case 'managerEdit':
-                        this.$refs.modalManagerEdit.showList(btn)
+                        this.$refs.modalManagerEdit.showList(btn,row)
                         break
                     case 'managerAdd':
                         this.$refs.modalManagerEdit.showList(btn)
                 }
             },
-            remove () {
+            remove() {
                 this.$Modal.confirm({
                     title: '刪除',
                     content: '<p>你是否確定要刪除?</p>',
@@ -101,6 +133,14 @@
                         this.$Message.info('Clicked cancel');
                     }
                 });
+            },
+            changePage (page) {
+                this.page.number = page - 1
+                this.loadData()
+            },
+            changeSize (pageSize) {
+                this.page.size = pageSize
+                this.loadData()
             }
         }
     }

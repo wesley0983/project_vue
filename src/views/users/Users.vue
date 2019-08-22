@@ -23,9 +23,9 @@
                     <BreadcrumbItem v-if="searchModel.departmentId>0">{{currentDepartment}}</BreadcrumbItem>
                 </Breadcrumb>
             </row>
-            <Table :columns="userList" :data="users" class="mx-3"></Table>
+            <Table :columns="columns" :data="users" class="mx-3"></Table>
             <row type="flex" justify="center"  class="mt-4">
-<!--                <Page :total="100"/>-->
+                <!--                <Page :total="100"/>-->
                 <Page :total="page.total" show-total show-sizer @on-change="changePage" @on-page-size-change="changeSize"></Page>
             </row>
         </content>
@@ -36,7 +36,7 @@
     export default {
         data () {
             return {
-                userList: [
+                columns: [
                     {
                         title: '#',
                         key: 'id'
@@ -154,7 +154,6 @@
                     method: 'POST',
                     body: JSON.stringify({
                         name: this.searchModel.keyword,
-                        page: this.page,
                         size: this.size,
                         number: this.page.number
                     }),

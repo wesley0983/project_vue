@@ -21,7 +21,7 @@
                                     class="mb-3"
                                     v-model="password"
                                     prefix="md-lock"
-                                    placeholder="Account"
+                                    placeholder="Password"
                                     style="width: auto"
                             />
                             <Input
